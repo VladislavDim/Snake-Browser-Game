@@ -3,13 +3,16 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const width = canvas.width;
-const height = canvas.height;
 const gridSize = width / 20;
 
 function drawGrid() {
     ctx.beginPath();
-    ctx.moveTo(gridSize, 0);
-    ctx.lineTo(gridSize, height);
+    for (let i = gridSize; i < width; i += gridSize) {
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, width);
+        ctx.moveTo(0, i);
+        ctx.lineTo(width, i);
+    }
     ctx.closePath();
     ctx.stroke();
 }
