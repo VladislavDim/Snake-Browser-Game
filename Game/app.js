@@ -1,11 +1,14 @@
 import { getImages } from "./images/img.js";
 import { createFood } from "./models/food.js";
-import { drawScene } from "./models/render.js";
+import { gameOver } from "./models/gameOver.js";
+import { drawScene, spawnFood } from "./models/render.js";
 import { createSnake } from "./models/snake.js";
 
 const snake = createSnake();
 const food = createFood(20);
 const images = getImages();
+
+let timer = null;
 
 const directions = {
     Up: { x: 0, y: - 1 },
@@ -22,25 +25,25 @@ window.addEventListener('keydown', (event) => {
         case "ArrowUp":
             if (defaultDirection != directions.Down) {
                 inputDirection = directions.Up;
-                snake.head.img = images.headUp;
+                snake.headImg = images.headUp;
             }
             break;
         case "ArrowDown":
             if (defaultDirection != directions.Up) {
                 inputDirection = directions.Down;
-                snake.head.img = images.headDown;
+                snake.headImg = images.headDown;
             }
             break;
         case "ArrowRight":
             if (defaultDirection != directions.Left) {
                 inputDirection = directions.Right;
-                snake.head.img = images.headRight;
+                snake.headImg = images.headRight;
             }
             break;
         case "ArrowLeft":
             if (defaultDirection != directions.Right) {
                 inputDirection = directions.Left;
-                snake.head.img = images.headLeft;
+                snake.headImg = images.headLeft;
             }
             break;
     }
@@ -67,33 +70,19 @@ function tick() {
     }
 
     defaultDirection = inputDirection;
-
     snake.head.x += defaultDirection.x;
     snake.head.y += defaultDirection.y;
     snake.head.x = checkCoordinates(snake.head.x);
     snake.head.y = checkCoordinates(snake.head.y);
+    gameOver(snake, start, timer);
     eat();
 }
 
 function eat() {
     if (snake.head.x == food.x && snake.head.y == food.y) {
         snake.length++;
-        spawnFood();
+        spawnFood(food, snake);
     }
-}
-
-function spawnFood() {
-    food.x = Math.floor(Math.random() * 20);
-    food.y = Math.floor(Math.random() * 20);
-
-    if (snake.head.x == food.x && snake.head.y == food.y) {
-        spawnFood();
-    }
-    snake.tail.forEach(el => {
-        if (el.x == food.x && el.y == food.y) {
-            spawnFood();
-        }
-    });
 }
 
 function main() {
@@ -102,7 +91,19 @@ function main() {
 }
 
 function start() {
-    setInterval(main, 100)
+
+    if (timer != null) {
+        clearInterval(timer);
+    }
+
+    snake.head.x = 4;
+    snake.head.y = 9;
+    snake.headImg = images.headRight;
+    snake.length = 4;
+    inputDirection = directions.Right;
+    spawnFood(food, snake);
+
+    timer = setInterval(main, 100)
 }
 
 start();

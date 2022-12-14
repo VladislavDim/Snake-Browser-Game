@@ -14,10 +14,10 @@ export function drawScene(snake, food) {
 
     rect(food.x, food.y, food.img);
 
-    rect(snake.head.x, snake.head.y, snake.head.img);
+    rect(snake.head.x, snake.head.y, snake.headImg);
 
     for (let element of snake.tail) {
-        rect(element.x, element.y, element.img);
+        rect(element.x, element.y, snake.bodyImg);
     }
 }
 
@@ -37,4 +37,18 @@ function drawGrid() {
     }
     ctx.closePath();
     ctx.stroke();
+}
+
+export function spawnFood(food, snake) {
+    food.x = Math.floor(Math.random() * 20);
+    food.y = Math.floor(Math.random() * 20);
+
+    if (snake.head.x == food.x && snake.head.y == food.y) {
+        spawnFood();
+    }
+    snake.tail.forEach(el => {
+        if (el.x == food.x && el.y == food.y) {
+            spawnFood();
+        }
+    });
 }

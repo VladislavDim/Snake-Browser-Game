@@ -1,5 +1,7 @@
 import { getImages } from "../images/img.js";
+
 const images = getImages();
+
 class Food {
     constructor(x, y, img) {
         this.x = x;
